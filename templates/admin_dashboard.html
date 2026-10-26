@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #007bff;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --bg-light: #f4f6f8;
+      --text-dark: #343a40;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-light); padding: 20px; color: var(--text-dark);}
+    .admin-wrap { max-width: 1200px; margin: 0 auto; }
+    .card { margin-bottom: 20px; border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card-header { background: var(--primary); color: white; font-weight: 600; border-radius: 8px 8px 0 0 !important; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: middle; font-size: 0.9rem; }
+    th { background: #e9ecef; color: var(--text-dark); }
+    img { max-width: 80px; height: auto; border-radius: 4px; }
+    .btn-action { padding: 6px 12px; margin: 2px; font-size: 0.85rem; }
+    .badge { padding: 5px 10px; border-radius: 12px; font-weight: 600; }
+    .token-text { font-size: 1rem; font-weight: 700; color: var(--success); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <h2 class="mb-4">🛠️ Admin Dashboard</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mb-4"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% set alert_class = 'alert-danger' if category == 'error' else 'alert-success' %}
+          <div class="alert {{ alert_class }} alert-dismissible fade show" role="alert">
+            {{ message | safe }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="card-header"><i class="fas fa-key"></i> Owner Registration Management</div>
+        <div class="card-body">
+            <p>Generate a unique, time-limited code for new Owners to register their accounts. Code is valid for 48 hours.</p>
+            <form method="POST" action="{{ url_for('generate_owner_code') }}">
+                <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-plus-circle"></i> Generate New Owner Code</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header"><i class="fas fa-list"></i> Room Listings ({{ rooms|length }})</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Preview</th>
+              <th>Title</th>
+              <th>Owner</th>
+              <th>Rent</th>
+              <th>Approval</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for room in rooms %}
+              <tr>
+                <td>
+                  {% if room['filename'] %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ room['filename']) }}" alt="Room">
+                  {% else %}
+                    <i class="fas fa-image fa-2x text-muted"></i>
+                  {% endif %}
+                </td>
+                <td><a href="{{ url_for('room_details', room_id=room['id']) }}" target="_blank">{{ room['title'] }}</a></td>
+                <td>{{ room['owner_name'] }}</td>
+                <td>₹{{ room['rent'] }}</td>
+                <td>
+                  {% if room['is_approved'] == 1 %}
+                    <span class="badge bg-success">Approved</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center">
+                    {% if room['is_approved'] == 0 %}
+                      <a href="{{ url_for('approve_room', room_id=room['id']) }}" class="btn btn-success btn-action me-2"><i class="fas fa-check"></i> Approve</a>
+                    {% else %}
+                      <a href="{{ url_for('reject_room', room_id=room['id']) }}" class="btn btn-warning btn-action me-2"><i class="fas fa-times"></i> Reject</a>
+                    {% endif %}
+                    
+                    <form method="POST" action="{{ url_for('delete_room', room_id=room['id']) }}" onsubmit="return confirm('Are you sure you want to permanently DELETE this room and ALL associated data (images, bookings)?');">
+                        <button type="submit" class="btn btn-danger btn-action"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6">No rooms available</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header"><i class="fas fa-users"></i> User Management ({{ users|length }})</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user['id'] }}</td>
+                        <td>{{ user['username'] }}</td>
+                        <td>
+                            {% if user['role'] == 'Owner' %}
+                                <span class="badge bg-primary">Owner</span>
+                            {% elif user['role'] == 'Admin' %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ user['role'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user['email'] or 'N/A' }} / {{ user['phone'] or 'N/A' }}</td>
+                        <td>
+                            {% if user['role'] != 'Admin' or user['id'] != session['user_id'] %}
+                                <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}" onsubmit="return confirm('WARNING: Are you sure you want to delete user {{ user['username'] }} (ID: {{ user['id'] }})?');">
+                                    <button type="submit" class="btn btn-sm btn-danger btn-action"><i class="fas fa-user-times"></i> Delete User</button>
+                                </form>
+                            {% else %}
+                                <span class="badge bg-secondary">System Admin</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header"><i class="fas fa-clipboard-check"></i> Active Owner Tokens</div>
+        <div class="card-body">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Token (Click to Copy)</th>
+                        <th>Expires</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for token in tokens %}
+                    {% set is_expired = (token['expiry'] < now) %}
+                    <tr {% if token['is_used'] or is_expired %}class="table-danger"{% endif %}>
+                        <td><span class="token-text" onclick="copyText('{{ token['token'] }}')">{{ token['token'] }} <i class="far fa-copy"></i></span></td>
+                        <td>{{ token['expiry'] }}</td>
+                        <td>
+                            {% if token['is_used'] %}
+                                <span class="badge bg-secondary">Used</span>
+                            {% elif is_expired %}
+                                <span class="badge bg-danger">Expired</span>
+                            {% else %}
+                                <span class="badge bg-success">Active</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if not tokens %}
+                <p class="text-muted text-center">No active or generated tokens found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert("Code copied to clipboard: " + text);
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+            alert("Could not copy code. Please copy manually: " + text);
+        });
+    }
+  </script>
+</body>
+</html>

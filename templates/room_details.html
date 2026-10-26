@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room['title'] }} - Room Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8A84FF;
+            --primary-dark: #5850E0;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --bg-light: #F7FAFC;
+            --bg-white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #cac5e1 0%, #022977f1 100%);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Compact Header */
+        .room-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--bg-white);
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .room-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .room-location {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .price-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        /* Left Column */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Gallery Container for the main carousel */
+        .main-gallery-container {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            background: var(--bg-white);
+            padding: 10px; /* Added padding for a slight inner frame */
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            height: 400px; 
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+        
+        .no-images {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Description Compact */
+        .description-section {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .description-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .description-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Right Column */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Features Compact */
+        .features-section {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .features-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .feature-icon {
+            color: var(--primary);
+            font-size: 0.9rem;
+            width: 16px;
+        }
+
+        /* Owner Compact */
+        .owner-section {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .owner-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .owner-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .owner-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .owner-icon {
+            color: var(--primary);
+            font-size: 0.9rem;
+            width: 16px;
+        }
+
+        /* Action Buttons Compact */
+        .action-section {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .book-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%; /* Make button full width */
+        }
+
+        .book-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .book-btn:disabled {
+            background: #A0AEC0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-btn {
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: var(--bg-white);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-available {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .status-unavailable {
+            background: #FED7D7;
+            color: #742A2A;
+        }
+        
+        /* Modal Customization */
+        .modal-header .btn-close-white {
+            filter: invert(1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .room-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .room-header {
+                padding: 20px;
+            }
+            
+            .room-title {
+                font-size: 1.4rem;
+            }
+            
+            .carousel-item img {
+                height: 250px; 
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-grid > * {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="room-header">
+            <div class="header-content">
+                <h1 class="room-title">{{ room['title'] }}</h1>
+                <p class="room-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ room['address'] }}
+                </p>
+                <div class="status-badge {% if room['availability'] == 'Available' %}status-available{% else %}status-unavailable{% endif %}">
+                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                    {{ room['availability'] }}
+                </div>
+            </div>
+            <div class="price-tag">
+                ₹{{ room['rent'] }}/month
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="left-column">
+                
+                <div class="main-gallery-container">
+                    <h3 class="gallery-title" style="margin-bottom: 10px; padding: 0 10px;">
+                        <i class="fas fa-images"></i>
+                        Photos
+                    </h3>
+                    
+                    {% if images %}
+                        <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for img in images %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <img src="{{ url_for('static', filename='uploads/' ~ img['filename']) }}" class="d-block w-100" alt="Room Photo {{ loop.index }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if images | length > 1 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="no-images">
+                            <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                            <p>No photos available</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="description-section">
+                    <h3 class="description-title">
+                        <i class="fas fa-file-alt"></i>
+                        Description
+                    </h3>
+                    <div class="description-content">
+                        {{ room['description'] }}
+                    </div>
+                </div>
+
+                <div class="owner-section d-block d-md-none">
+                    <h3 class="owner-title">
+                        <i class="fas fa-user"></i>
+                        Contact Owner
+                    </h3>
+                    <div class="owner-details">
+                        <div class="owner-detail">
+                            <i class="fas fa-user-circle owner-icon"></i>
+                            <span><strong>{{ room['username'] }}</strong></span>
+                        </div>
+                        <div class="owner-detail">
+                            <p class="text-secondary m-0">
+                                Contact details are shared upon sending a booking request.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="right-column">
+                
+                <div class="features-section">
+                    <h3 class="features-title">
+                        <i class="fas fa-star"></i>
+                        Amenities
+                    </h3>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-wifi feature-icon"></i>
+                            <span>WiFi</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span>Food</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span>Bed</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tv feature-icon"></i>
+                            <span>TV</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-car feature-icon"></i>
+                            <span>Parking</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-snowflake feature-icon"></i>
+                            <span>AC</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shower feature-icon"></i>
+                            <span>Hot Water</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-lock feature-icon"></i>
+                            <span>Security</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="owner-section d-none d-md-block">
+                    <h3 class="owner-title">
+                        <i class="fas fa-user"></i>
+                        Contact Owner
+                    </h3>
+                    <div class="owner-details">
+                        <div class="owner-detail">
+                            <i class="fas fa-user-circle owner-icon"></i>
+                            <span><strong>{{ room['username'] }}</strong></span>
+                        </div>
+                         <div class="owner-detail">
+                            <p class="text-secondary m-0">
+                                Contact details are shared upon sending a booking request.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="action-buttons">
+                        {% if room['availability'] == 'Available' %}
+                            <button type="button" class="book-btn" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                                <i class="fas fa-calendar-check"></i>
+                                **Book Visite**
+                            </button>
+                            {% else %}
+                            <button class="book-btn" disabled>
+                                <i class="fas fa-times-circle"></i>
+                                Currently Unavailable
+                            </button>
+                        {% endif %}
+                        <a href="{{ url_for('index') }}" class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Listings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: var(--primary); color: white;">
+                    <h5 class="modal-title" id="bookingModalLabel">
+                        <i class="fas fa-calendar-alt me-2"></i> Book a Visite for {{ room['title'] }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('book', room_id=room['id']) }}" method="post">
+                    <div class="modal-body">
+                        <p class="text-muted mb-3">Please fill in your contact details so the owner can reach you to schedule the Visite.</p>
+                        
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="contactEmail" name="contactEmail" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contactPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="contactPhone" name="contactPhone" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="preferredTime" class="form-label">Preferred Time for Visite (Optional)</label>
+                            <textarea class="form-control" id="preferredTime" name="preferredTime" rows="2" placeholder="e.g., 'Weekend afternoons' or 'Any day after 5 PM'"></textarea>
+                        </div>
+
+                        <p class="text-small text-secondary mt-3">By clicking 'Send Booking Request', your details will be shared with the room owner to coordinate the visite.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: var(--primary);">
+                            <i class="fas fa-paper-plane me-2"></i> Send Booking Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

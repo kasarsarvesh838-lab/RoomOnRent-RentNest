@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Owner Dashboard - Room on Rent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8A84FF;
+            --primary-dark: #5850E0;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --bg-light: #F7FAFC;
+            --bg-white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #cac5e1 0%, #022977f1 100%);;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--bg-white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        /* Add Room Form */
+        .add-room-section {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-room-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border: 2px dashed #CBD5E0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.05);
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Rooms Table */
+        .rooms-section {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px; /* Added margin for separation */
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius);
+        }
+
+        .rooms-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-white);
+        }
+
+        .rooms-table th {
+            background: var(--primary);
+            color: var(--bg-white);
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .rooms-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 0.9rem;
+        }
+
+        .rooms-table tr:hover {
+            background: var(--bg-light);
+        }
+
+        .room-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-available {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .status-unavailable {
+            background: #FED7D7;
+            color: #742A2A;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-available {
+            background: #38A169;
+            color: white;
+        }
+
+        .btn-available:hover {
+            background: #2F855A;
+            transform: translateY(-1px);
+        }
+
+        .btn-unavailable {
+            background: #E53E3E;
+            color: white;
+        }
+
+        .btn-unavailable:hover {
+            background: #C53030;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        
+        /* New Booking Section Styles */
+        .new-booking-section {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .table-booking tr.table-warning {
+            border-left: 5px solid #ffc107; /* Highlight new bookings */
+        }
+        
+        .table-booking td {
+            vertical-align: middle;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 25px 20px;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .add-room-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .rooms-table, .table-booking {
+                min-width: 800px;
+            }
+            
+            .table-container {
+                border: 1px solid #E2E8F0;
+                border-radius: var(--radius);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .add-room-section,
+            .rooms-section {
+                padding: 20px;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <a href="{{ url_for('index') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <h1><i class="fas fa-tachometer-alt"></i> Owner Dashboard</h1>
+            <p>Manage your rental properties</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else ('danger' if category == 'error' else 'info') }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="new-booking-section">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-check"></i> Viewing Requests
+                {% if new_booking_count and new_booking_count > 0 %}
+                    <span class="badge bg-danger ms-2">{{ new_booking_count }} NEW</span>
+                {% endif %}
+            </h2>
+            
+            <div class="table-container">
+                {% if bookings %}
+                    <table class="table table-booking table-striped table-hover mb-0">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>Room</th>
+                                <th>Contact Name</th>
+                                <th>Email / Phone</th>
+                                <th>Time Preference</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr class="{% if booking['status'] == 'New' %}table-warning fw-bold{% endif %}">
+                                <td>
+                                    <a href="{{ url_for('room_details', room_id=booking['room_id']) }}" class="text-primary text-decoration-none">
+                                        {{ booking['room_title'] }}
+                                    </a>
+                                    <div class="text-muted small mt-1">{{ booking['timestamp'].split(' ')[0] }}</div>
+                                </td>
+                                <td>{{ booking['full_name'] }}</td>
+                                <td>
+                                    <div class="small"><i class="fas fa-envelope me-1"></i> {{ booking['contact_email'] }}</div>
+                                    <div class="small"><i class="fas fa-phone me-1"></i> {{ booking['contact_phone'] }}</div>
+                                </td>
+                                <td>
+                                    {{ booking['preferred_time'] or 'Not specified' }}
+                                </td>
+                                <td>
+                                    {% if booking['status'] == 'New' %}
+                                        <span class="badge bg-danger">NEW</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Contacted</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if booking['status'] == 'New' %}
+                                        <form action="{{ url_for('mark_contacted', booking_id=booking['id']) }}" method="post" style="display:inline;">
+                                            <button type="submit" class="action-btn btn-available">
+                                                <i class="fas fa-check"></i> Mark Contacted
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-muted small">Followed Up</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info m-0" role="alert">
+                        <i class="fas fa-info-circle me-2"></i> You have no active viewing requests yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        ---
+
+        <div class="add-room-section">
+            <h2 class="section-title">
+                <i class="fas fa-plus-circle"></i> Add New Room
+            </h2>
+            <form class="add-room-form" action="{{ url_for('add_room') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Room Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="e.g., Cozy Studio Apartment" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Rent (₹)</label>
+                    <input type="number" class="form-control" name="rent" placeholder="e.g., 12000" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Room Images (Multiple allowed)</label>
+                    <div class="file-upload">
+                        <label class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span id="file-upload-text">Choose one or more room images (JPG, PNG, WebP)</span>
+                        </label>
+                        <input type="file" name="room_images[]" id="room_images_input" accept=".jpg,.jpeg,.png,.webp" required multiple>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" placeholder="Describe your room, amenities, location advantages..." required></textarea>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-control" name="address" placeholder="Full address with landmark" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-plus"></i> Add Room
+                </button>
+            </form>
+        </div>
+
+        ---
+
+        <div class="rooms-section">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i> Your Listed Rooms
+            </h2>
+            
+            <div class="table-container">
+                <table class="rooms-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Rent</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for room in rooms %}
+                            <tr>
+                                <td>
+                                    {% if room[5] %}
+                                        <img class="room-thumb" src="{{ url_for('static', filename='uploads/' ~ room[5]) }}" alt="{{ room[1] }}">
+                                    {% else %}
+                                        <img class="room-thumb" src="{{ url_for('static', filename='uploads/default.jpg') }}" alt="Default">
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ room[1] }}</strong></td>
+                                <td>{{ room[2][:60] }}{% if room[2]|length > 60 %}...{% endif %}</td>
+                                <td><strong>₹{{ room[3] }}</strong></td>
+                                <td>{{ room[4][:40] }}{% if room[4]|length > 40 %}...{% endif %}</td>
+                                <td>
+                                    {% if room[7] == 'Available' %}
+                                        <span class="status-badge status-available">
+                                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> {{ room[7] }}
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-unavailable">
+                                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> {{ room[7] }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('toggle_availability', room_id=room[0]) }}" method="POST">
+                                        {% if room[7] == 'Available' %}
+                                            <button type="submit" class="action-btn btn-unavailable">
+                                                <i class="fas fa-times"></i> Mark Unavailable
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="action-btn btn-available">
+                                                <i class="fas fa-check"></i> Mark Available
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <i class="fas fa-home"></i>
+                                        <h3>No Rooms Added Yet</h3>
+                                        <p>Start by adding your first room above!</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File upload preview - Handles multiple file names correctly
+        document.getElementById('room_images_input').addEventListener('change', function(e) {
+            const labelSpan = document.getElementById('file-upload-text');
+            if (this.files.length > 0) {
+                if (this.files.length === 1) {
+                    labelSpan.textContent = this.files[0].name;
+                } else {
+                    labelSpan.textContent = `${this.files.length} images selected`;
+                }
+            } else {
+                labelSpan.textContent = 'Choose one or more room images (JPG, PNG, WebP)';
+            }
+        });
+
+        // Form validation
+        document.querySelector('.add-room-form').addEventListener('submit', function(e) {
+            const rent = this.querySelector('input[name="rent"]');
+            if (rent.value < 100) {
+                e.preventDefault();
+                alert('Rent amount seems too low. Please enter a valid amount.');
+                rent.focus();
+                return false;
+            }
+        });
+
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.add-room-section, .rooms-section, .new-booking-section');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

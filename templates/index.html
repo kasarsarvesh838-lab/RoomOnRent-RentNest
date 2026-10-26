@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room on Rent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === GLOBAL STYLES === */
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8A84FF;
+            --primary-dark: #5850E0;
+            --secondary: #FF6584; /* Pink/Red for visual accent */
+            --accent: #36D1DC;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --bg-light: #fcfbf7;
+            --bg-white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        /* === FIXED TOP NAVBAR (EXISTING STYLES) === */
+        .navbar {
+            background: var(--bg-white);
+            padding: 8px 5%;
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand i {
+            font-size: 1.4rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: rgba(108, 99, 255, 0.08);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        /* === MOBILE MENU TOGGLE === */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* === FILTER FORM === */
+        .filter-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: var(--bg-white);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-form input {
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .filter-form button {
+            background: var(--primary);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .filter-form button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* === UPDATED HEADER - STUDENT FOCUSED === */
+        .header {
+            background: linear-gradient(135deg, #05164a 50%, #0e6d7d 100%);
+            color: var(--bg-white);
+            padding: 100px 20px 80px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: url('static/AZohA40ddtcO_5TEOSrKsQ-AZohA40d-yzVuy8Wz84jYg.jpg') no-repeat center right;
+            background-size: cover;
+            opacity: 0.1;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-subtitle {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            max-width: 500px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cta-primary {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 101, 132, 0.3);
+        }
+
+        .cta-primary:hover {
+            background: #ff4d7a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 101, 132, 0.4);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-secondary:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* === ROOMS SECTION === */
+        .rooms-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--text-dark);
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
+        }
+
+        .rooms {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 20px 0 50px;
+        }
+
+        .room-card {
+            border-radius: var(--radius);
+            background: var(--bg-white);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .room-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .room-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-info {
+            padding: 20px;
+        }
+
+        .card-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .card-info p {
+            color: var(--text-light);
+            margin: 8px 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            padding-top: 15px;
+            border-top: 1px solid #EDF2F7;
+        }
+
+        .features span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(108, 99, 255, 0.05);
+            padding: 15px 20px;
+            border-top: 1px solid #EDF2F7;
+        }
+
+        .price-box span {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .book-btn {
+            background: var(--primary);
+            color: var(--bg-white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .book-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--text-light);
+            margin: 50px 0;
+            font-size: 1.1rem;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        /* === DISABLED CARD === */
+        .room-card.disabled {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* === AVAILABILITY BADGE === */
+        .availability {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            color: var(--bg-white);
+            font-weight: 600;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+
+        .available {
+            background: #38A169;
+        }
+
+        .not-available {
+            background: #E53E3E;
+        }
+
+        /* === FOOTER === */
+        footer {
+            background: var(--text-dark);
+            color: var(--bg-white);
+            padding: 60px 5% 30px;
+            margin-top: 50px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-left, .footer-center, .footer-right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-left h2, .footer-center h2, .footer-right h2 {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .footer-left p {
+            color: #CBD5E0;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            color: var(--bg-white);
+            font-size: 1.1rem;
+            transition: 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent);
+            background: rgba(54, 209, 220, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .newsletter input, .newsletter button {
+            display: block;
+            width: 100%;
+            margin: 8px 0;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .newsletter input {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .newsletter input::placeholder {
+            color: #A0AEC0;
+        }
+
+        .newsletter input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .newsletter button {
+            background: var(--accent);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .newsletter button:hover {
+            background: #2BB4C6;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            color: #A0AEC0;
+        }
+
+        /* === CHATBOT STYLES (UPDATED FOR UNIQUE FIRST-PAGE LOOK) === */
+
+        /* Floating Chat Button (Pulsing) */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary); /* Secondary color for contrast */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(255, 101, 132, 0.6); 
+            transition: all 0.3s ease;
+            z-index: 1002; /* Highest Z-index */
+            
+            /* Pulsing Animation */
+            animation: pulse 2s infinite; 
+        }
+
+        .chat-button:hover {
+            background: #ff4d7a;
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 101, 132, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 101, 132, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 101, 132, 0); }
+        }
+
+        /* New: Proactive Welcome Bubble */
+        .welcome-bubble {
+            position: fixed;
+            bottom: 105px; /* Positioned just above the chat button */
+            right: 30px;
+            padding: 10px 15px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 1px solid var(--secondary);
+            border-radius: 12px 12px 0 12px; /* Distinctive shape */
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            font-size: 0.9rem;
+            max-width: 250px;
+            opacity: 0; /* Starts hidden */
+            transition: opacity 0.5s ease;
+        }
+
+        .welcome-bubble.show {
+            opacity: 1;
+        }
+        
+        /* Chat Window Container */
+        .chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 480px; 
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            transform: scale(0.5);
+            opacity: 0;
+            pointer-events: none;
+            transform-origin: bottom right;
+            transition: all 0.3s ease-in-out;
+            font-size: 0.95rem;
+        }
+
+        .chat-container.active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .chat-window {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        /* Scrollbar Styling */
+        .chat-window::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-window::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+        .chat-window::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-input {
+            padding: 10px 15px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ced4da;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Chat bubble styles */
+        .chat-message {
+            margin-bottom: 12px;
+            max-width: 90%;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            padding: 10px 14px;
+            border-radius: 18px;
+            white-space: pre-wrap;
+        }
+
+        .user-message {
+            margin-left: auto;
+            background: var(--primary-light);
+            color: white;
+            border-top-right-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .bot-message {
+            margin-right: auto;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 1px solid #e9ecef;
+            border-top-left-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .bot-message a {
+            color: var(--secondary); 
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        /* === MOBILE RESPONSIVE DESIGN === */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .filter-form {
+                flex-wrap: wrap;
+            }
+            /* ... (Existing mobile styles) ... */
+            .chat-container {
+                width: 95%;
+                height: 80%;
+                bottom: 80px;
+                right: 2.5%;
+                left: 2.5%; 
+                margin: 0 auto;
+            }
+            .welcome-bubble {
+                right: 20px;
+            }
+            .scroll-top {
+                bottom: 110px; 
+                right: 20px;
+            }
+        }
+        
+        /* === FILTER TOGGLE BUTTON FOR MOBILE === */
+        .filter-toggle {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .filter-toggle {
+                display: block;
+            }
+        }
+
+        /* === SCROLL TO TOP BUTTON === */
+        .scroll-top {
+            position: fixed;
+            bottom: 110px; 
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 999; 
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="#" class="nav-brand">
+            <i class="fas fa-home"></i>
+            RoomOnRent
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a style="color: var(--secondary);" href="{{ url_for('register') }}">Login/Register</a>
+            <a href="#contact">Contact</a>
+            <a href="{{ url_for('owner') }}">Dashboard</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+        </div>
+
+        <div class="nav-actions">
+            <button class="filter-toggle" id="filterToggle">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <form class="filter-form" method="GET" action="{{ url_for('index') }}" id="filterForm">
+            <input type="text" name="location" placeholder="Search location" value="{{ request.args.get('location', '') }}">
+            
+            <select name="max_rent" id="maxRentSelect" style="border-radius: 8px; border: 1px solid #E2E8F0; padding: 10px 15px; font-size: 0.9rem; min-width: 150px;">
+                <option value="">Max Rent (Any)</option>
+                <option value="2000" {% if request.args.get('max_rent', '') == '2000' %}selected{% endif %}>Up to ₹2000</option>
+                <option value="5000" {% if request.args.get('max_rent', '') == '5000' %}selected{% endif %}>Up to ₹5000</option>
+                <option value="10000" {% if request.args.get('max_rent', '') == '10000' %}selected{% endif %}>Up to ₹10000</option>
+                <option value="20000" {% if request.args.get('max_rent', '') == '20000' %}selected{% endif %}>Up to ₹20000</option>
+            </select>
+            
+            <button type="submit">Apply Filter</button>
+        </form>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                Find Your<br>
+                Perfect<br>
+                <span style="color: var(--secondary);">Safe, Simple,<br>and Affordable<br> Space</span>
+            </h1>
+            <p class="header-subtitle">
+                Affordable rooms on rent for students/Other. Find your ideal study environment with all the amenities you need.
+            </p>
+            <div class="header-actions">
+                <a href="#rooms" class="cta-button cta-primary">
+                    <i class="fas fa-search"></i> Browse Listings Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="rooms-container" id="rooms">
+        <h2 class="section-title">Available Rooms</h2>
+        
+        <section class="rooms">
+            {% if rooms and rooms|length > 0 %}
+                {% for room in rooms %}
+                    <a href="{{ url_for('room_details', room_id=room['id']) }}" class="room-card {% if room['availability'] != 'Available' %}disabled{% endif %}" style="text-decoration: none; color: inherit;">
+                        <img src="{{ url_for('static', filename='uploads/' ~ (room['image_filename'] if room['image_filename'] else 'default.jpg')) }}" alt="Room Image">
+                        
+                        <div class="availability {% if room['availability']=='Available' %}available{% else %}not-available{% endif %}">
+                            {{ room['availability'] }}
+                        </div>
+
+                        <div class="card-info">
+                            <h3>{{ room['title'] }}</h3>
+                            <p><i class="fa-solid fa-location-dot text-primary"></i> {{ room['address'] }}</p>
+                            <p>{{ room['description'][:80] if room['description'] else 'No description available' }}{% if room['description'] and room['description']|length > 80 %}...{% endif %}</p>
+
+                            <div class="features">
+                                <span><i class="fas fa-wifi"></i> Wifi</span>
+                                <span><i class="fas fa-bed"></i> Bed</span>
+                                <span><i class="fas fa-utensils"></i> Food</span>
+                            </div>
+                        </div>
+
+                        <div class="price-box">
+                            <span>₹ {{ room['rent'] }} / month</span>
+                            <button class="book-btn"
+                                {% if room['availability'] != 'Available' %}disabled style="background:#aaa;cursor:not-allowed;"{% endif %}>
+                                {% if room['availability'] == 'Available' %}Explore{% else %}Not Available{% endif %}
+                            </button>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p class="empty">No rooms available yet. Please check back soon!</p>
+            {% endif %}
+        </section>
+    </div>
+
+    <footer id="contact">
+        <div class="footer-container">
+            
+            <div class="footer-left">
+                <h2>Contact Us</h2>
+                <p><i class="fas fa-envelope"></i> example@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +91 96********</p>
+                <p><i class="fas fa-map-marker-alt"></i> Jalgaon, Maharashtra</p>
+            </div>
+            
+            <div class="footer-center">
+                <h2>Follow Us</h2>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-right">
+                <h2>Newsletter</h2>
+                <div class="newsletter">
+                    <form>
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>Developed by Team Shadow &copy; 2025</p>
+        </div>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+    
+    <div class="welcome-bubble" id="welcomeBubble">
+        👋 Need a room fast? Click the chat button to search!
+    </div>
+
+    <div class="chat-button" id="chatToggle">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <i class="fas fa-robot"></i> RoomFinder Bot
+            <button style="background: none; border: none; color: white; font-size: 1.2rem;" onclick="document.getElementById('chatContainer').classList.remove('active');">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-window" id="chatWindow">
+            <div class="bot-message chat-message">
+                Hey there! I'm the RoomFinder Bot. Tell me the **area** and **budget** you're looking for, e.g., **Shirpur and 4500 to 7000**.
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask me about a room..." onkeypress="if(event.keyCode == 13) sendMessage();">
+            <button onclick="sendMessage();" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- EXISTING JAVASCRIPT ---
+        
+        // Mobile menu toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+            document.getElementById('filterForm').classList.remove('active');
+        });
+
+        // Filter form toggle for mobile
+        document.getElementById('filterToggle').addEventListener('click', function() {
+            document.getElementById('filterForm').classList.toggle('active');
+            document.getElementById('navLinks').classList.remove('active');
+        });
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('navLinks');
+            const filterForm = document.getElementById('filterForm');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const filterToggle = document.getElementById('filterToggle');
+            const chatContainer = document.getElementById('chatContainer');
+            const chatToggle = document.getElementById('chatToggle');
+            const welcomeBubble = document.getElementById('welcomeBubble'); 
+
+            if (!navLinks.contains(event.target) && !mobileToggle.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+
+            if (!filterForm.contains(event.target) && !filterToggle.contains(event.target)) {
+                filterForm.classList.remove('active');
+            }
+            
+            // Note: We don't hide the bubble here. It's controlled by specific events below.
+        });
+
+        // Close menus when clicking on links
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('active');
+            } else {
+                scrollTopBtn.classList.remove('active');
+            }
+            // Hide welcome bubble on scroll
+            if (window.pageYOffset > 50) {
+                document.getElementById('welcomeBubble').classList.remove('show');
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll for header buttons
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+
+        // --- NEW CHATBOT JAVASCRIPT ---
+
+        const welcomeBubble = document.getElementById('welcomeBubble');
+
+        // Show the bubble after a delay (e.g., 3 seconds)
+        setTimeout(() => {
+            const chatContainer = document.getElementById('chatContainer');
+            if (!chatContainer.classList.contains('active')) {
+                welcomeBubble.classList.add('show');
+            }
+        }, 3000);
+
+        // Chatbot toggle
+        document.getElementById('chatToggle').addEventListener('click', function() {
+            const container = document.getElementById('chatContainer');
+            container.classList.toggle('active');
+            welcomeBubble.classList.remove('show'); // Hide bubble when opening chat
+            
+            if(container.classList.contains('active')) {
+                const chatWindow = document.getElementById('chatWindow');
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+        });
+
+        // Function to handle sending message
+        function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const chatWindow = document.getElementById('chatWindow');
+            const sendButton = document.getElementById('sendButton');
+            const message = chatInput.value;
+
+            if (!message.trim()) return;
+
+            // 1. Display user message
+            chatWindow.innerHTML += `<div class="user-message chat-message">${message}</div>`;
+            chatInput.value = '';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            
+            // Disable input and button while waiting for response
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Loading spinner
+
+            // 2. Send message to Flask backend
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 3. Display bot response
+                // Replace **bold** with <strong> and remove extra styling to be applied by CSS
+                const botResponse = data.response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+                chatWindow.innerHTML += `<div class="bot-message chat-message">${botResponse}</div>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                chatWindow.innerHTML += `<div class="bot-message chat-message" style="background:#ffdddd; color:#cc0000;">Oops! Failed to connect to the RoomFinder Bot.</div>`;
+            })
+            .finally(() => {
+                // Re-enable input and button
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to new message
+                chatInput.focus();
+            });
+        }
+    </script>
+</body>
+</html>
